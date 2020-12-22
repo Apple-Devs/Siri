@@ -117,6 +117,7 @@ client.on("message", (message) => {
     }
   }
 
+  // mute function
   function mute() {
     if (message.member.hasPermission("MANAGE_ROLES")) {
       var targetUser = message.mentions.users.first();
@@ -146,6 +147,7 @@ client.on("message", (message) => {
     }
   }
 
+  // unmute function
   function unmute() {
     if (message.member.hasPermission("MANAGE_ROLES")) {
       if (!message.guild.me.hasPermission("MANAGE_ROLES")) {
@@ -188,6 +190,7 @@ client.on("message", (message) => {
     }
   }
 
+  // Ban function
   function ban() {
     if (message.member.hasPermission("BAN_MEMBERS")) {
       if (!message.guild.me.hasPermission("BAN_MEMBERS")) {
@@ -222,6 +225,27 @@ client.on("message", (message) => {
     }
   }
 
+  // Clear command
+  function clear(object) {
+    if (!message.member.hasPermission("MANAGE_MESSAGES"))
+      return message.reply("You don't have permission to manage messages");
+    if (!message.guild.me.hasPermission("MANAGE_MESSAGES"))
+      return message.reply("I don't have permission to manage messages");
+
+    if (!object) {
+      message.reply("Please provide number of messages to be deleted.");
+      return;
+    }
+    object = parseFloat(object);
+    object = Math.round(object);
+    message.channel
+      .bulkDelete(object)
+      .then((messages) => {
+        console.log(`Bulk Deleted ${messages.size} messages`);
+      })
+      .catch(console.err);
+  }
+
   const siriGreeting = `Hi ${message.author.username}, I am Siri, your personal virtual assistant. How may I help you?`;
 
   if (checkGreeting() && !checkOperation()) {
@@ -249,6 +273,8 @@ client.on("message", (message) => {
       unmute();
     } else if (operation == "ban") {
       ban();
+    } else if (operation == "clear") {
+      clear(args[0]);
     }
   }
 });
