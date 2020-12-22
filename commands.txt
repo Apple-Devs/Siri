@@ -1,0 +1,20 @@
+mute
+ban
+unmute
+create category
+addrole
+search
+roll a die
+kick
+unban
+create invite link
+create channel
+clear
+joke
+calculator
+removerole
+ping
+meme
+weather
+rockpaperscissors
+cricketmatches
