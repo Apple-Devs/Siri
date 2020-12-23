@@ -66,6 +66,7 @@ client.on("message", (message) => {
         if (swearWordsArr[i] == args[j]) {
           swear = swearWordsArr[i];
           swearPos = j;
+          console.log(swear);
           return true;
         }
       }
@@ -369,6 +370,23 @@ client.on("message", (message) => {
     console.log(numerall);
   }
 
+  function time() {
+
+    for (let i = 0; i < args.length; i++) {
+      if (args[i].toLowerCase() == 'time') {
+        var currentdate = new Date(); 
+        var datetime = "The time is: " + currentdate.getDate() + "/"
+                    + (currentdate.getMonth()+1)  + "/" 
+                    + currentdate.getFullYear() + " @ "  
+                    + currentdate.getHours() + ":"  
+                    + currentdate.getMinutes() + ":" 
+                    + currentdate.getSeconds();
+        console.log(datetime)
+        message.channel.send(datetime);
+      }
+    }
+  }
+
   swearCheck();
 
   const siriGreeting = `Hi ${message.author.username}, I am Siri, your personal virtual assistant. How may I help you?`;
@@ -401,6 +419,8 @@ client.on("message", (message) => {
       rollaDie();
     } else if (operation == "joke" || operation == "pun") {
       joke();
+    } else if (operation == 'time') {
+      time();
     }
   }
 
