@@ -27,6 +27,7 @@ client.on("message", (message) => {
   var searchEngine;
   var object = "";
   var onOperationsPositionInTheMessage = 0;
+  var b;
 
   function checkGreeting() {
     for (let i = 0; i < greetArr.length; i++) {
@@ -223,20 +224,20 @@ client.on("message", (message) => {
   }
 
   // Clear command
-  function clear(object) {
+  function clear(numberOfMessagesToBeCleared) {
     if (!message.member.hasPermission("MANAGE_MESSAGES"))
       return message.reply("You don't have permission to manage messages");
     if (!message.guild.me.hasPermission("MANAGE_MESSAGES"))
       return message.reply("I don't have permission to manage messages");
 
-    if (!object) {
+    if (!numberOfMessagesToBeCleared) {
       message.reply("Please provide number of messages to be deleted.");
       return;
     }
-    object = parseFloat(object);
-    object = Math.round(object);
+    numberOfMessagesToBeCleared = parseFloat(numberOfMessagesToBeCleared);
+    numberOfMessagesToBeCleared = Math.round(numberOfMessagesToBeCleared);
     message.channel
-      .bulkDelete(object)
+      .bulkDelete(numberOfMessagesToBeCleared)
       .then((messages) => {
         console.log(`Bulk Deleted ${messages.size} messages`);
       })
@@ -270,6 +271,14 @@ client.on("message", (message) => {
       .catch(console.error);
   }
 
+  function convertInt() {
+    var a = message.content.match(/\d+/g);
+    for (var i = 0; i < a.length; a++) {
+      b = parseInt(a[i]);
+      console.log(typeof(b));
+    }
+  }
+
   const siriGreeting = `Hi ${message.author.username}, I am Siri, your personal virtual assistant. How may I help you?`;
 
   if (checkGreeting() && !checkOperation()) {
@@ -298,7 +307,10 @@ client.on("message", (message) => {
     } else if (operation == "ban") {
       ban();
     } else if (operation == "clear") {
-      clear(args[args.length - 1]);
+       
+      convertInt();
+      clear(b);
+      console.log(b);
     } else if (operation == "kick") {
       kick();
     }
