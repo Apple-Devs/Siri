@@ -19,8 +19,9 @@ client.on("ready", () => {
 });
 
 client.on("message", (message) => {
+  if (message.author.bot || message.channel.type === "dm") return;
   var args = message.content.split(/ +/);
-  var revArgs = args.reverse();
+  var revArgs = message.content.split(/ +/).reverse();
   var operation = "";
   var operationsPositionInTheMessage;
   var searchEngine;
@@ -141,7 +142,7 @@ client.on("message", (message) => {
       const member = guild.members.cache.get(targetUser.id);
       member.roles.add(role);
 
-      message.reply(`${targetUser.username} has now been muted.`);
+      message.reply(`${message.mentions.users.first()} has now been muted.`);
     } else {
       message.reply("You don't have permission to mute others");
     }
@@ -177,13 +178,9 @@ client.on("message", (message) => {
 
       if (member.roles.cache.get(role.id)) {
         member.roles.remove(role);
-        message.reply(
-          `<@${message.mentions.users.first()}> has now been unmuted`
-        );
+        message.reply(`${message.mentions.users.first()} has now been unmuted`);
       } else {
-        message.reply(
-          `<@${message.mentions.users.first()}> is already unmuted`
-        );
+        message.reply(`${message.mentions.users.first()} is already unmuted`);
       }
     } else {
       message.reply("You don't have permission to unmute others");
@@ -246,6 +243,33 @@ client.on("message", (message) => {
       .catch(console.err);
   }
 
+  function kick() {
+    if (!message.member.hasPermission("KICK_MEMBERS")) {
+      message.reply("You have no permissions to do that");
+      return;
+    }
+
+    let mentionMember = message.mentions.members.first();
+
+    if (!mentionMember) {
+      message.reply("Please mention member which you need to kick");
+      return;
+    }
+
+    if (!mentionMember.kickable) {
+      message.channel.send("I have no permissions to kick this user");
+      return;
+    }
+
+    mentionMember
+      .kick()
+      .then(() => {
+        console.log(`Kicked ${mentionMember}`);
+        message.channel.send(`Kicked ${mentionMember}`);
+      })
+      .catch(console.error);
+  }
+
   const siriGreeting = `Hi ${message.author.username}, I am Siri, your personal virtual assistant. How may I help you?`;
 
   if (checkGreeting() && !checkOperation()) {
@@ -274,7 +298,9 @@ client.on("message", (message) => {
     } else if (operation == "ban") {
       ban();
     } else if (operation == "clear") {
-      clear(args[0]);
+      clear(args[args.length - 1]);
+    } else if (operation == "kick") {
+      kick();
     }
   }
 });
