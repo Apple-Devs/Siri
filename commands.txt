@@ -4,10 +4,9 @@ unmute
 create category
 addrole
 search
-roll a die
+rolladie
 kick
 unban
-create invite link
 create channel
 clear
 joke
@@ -18,4 +17,10 @@ meme
 weather
 rockpaperscissors
 cricketmatches
+invite
 question
+report
+warn
+pun
+date
+time

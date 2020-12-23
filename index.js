@@ -12,6 +12,12 @@ var commandArr = commands.toString("utf8").split("\n");
 var searchCommands = fs.readFileSync("search commands.txt");
 var searchCommandArr = searchCommands.toString("utf8").split("\n");
 
+var jokes = fs.readFileSync("jokes.txt");
+var jokeArr = jokes.toString("utf8").split("\n");
+
+var swearWords = fs.readFileSync('swearing words.txt');
+var swearWordsArr = swearWords.toString('utf8').split("\n");
+
 const client = new Discord.Client();
 
 client.on("ready", () => {
@@ -20,6 +26,10 @@ client.on("ready", () => {
 
 client.on("message", (message) => {
   if (message.author.bot || message.channel.type === "dm") return;
+  var punctuationLess = message.content.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+  var finalString = punctuationLess.replace(/\s{2,}/g," ");
+  message.content = finalString;
+
   var args = message.content.split(/ +/);
   var revArgs = message.content.split(/ +/).reverse();
   var operation = "";
@@ -28,6 +38,11 @@ client.on("message", (message) => {
   var object = "";
   var onOperationsPositionInTheMessage = 0;
   var b;
+  var swear;
+
+
+  var lowerCaseMsg = message.content.toLowerCase();
+  var newMsg = lowerCaseMsg.replace(/\s{2,}/g," ");
 
   function checkGreeting() {
     for (let i = 0; i < greetArr.length; i++) {
@@ -42,6 +57,63 @@ client.on("message", (message) => {
       }
     }
   }
+
+  
+
+  function checkForSwearWords() {
+    for (let i = 0; i < swearWordsArr.length; i++) {
+      for (let j = 0; j < args.length; j++) {
+        if (swearWordsArr[i] == args[j]) {
+          swear = swearWordsArr[i];
+          swearPos = j;
+          return true;
+        }
+      }
+    }
+  }
+
+  function swearCheck() {
+    if (message.author.tag == "Tusshar#3024" || message.author.tag == "Rasputin#1629"){
+      return;
+    } else {
+      checkForSwearWords();
+      if (checkForSwearWords()) {
+        message.channel.bulkDelete(1);
+        message.reply('You have been muted for using a swear word so stfu');
+        
+        const roleName = "Muted";
+        const { guild } = message;
+        const role = guild.roles.cache.find((role) => {
+          return role.name === roleName;
+        });
+
+        if (!role) {
+          message.reply(`There is no role with the name "${roleName}"`);
+          return;
+        }
+        const member = guild.members.cache.get(message.author.id);
+        member.roles.add(role);
+
+        return;
+      }
+    }
+  }
+
+
+
+  // var filteredMfunctionGreeting() {
+  //   for (let i = 0; i < greetArr.length; i++) {
+  //     for (let j = 0; j < args.length; j++) {
+  //       if (greetArr[i] == args[j]) {
+  //         for (let k = 0; k < args.length; k++) {
+  //           if (args[k] == "siri") {
+  //             return true;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   function checkOperation() {
     for (let i = 0; i < commandArr.length; i++) {
@@ -58,14 +130,14 @@ client.on("message", (message) => {
   function checkPositionOfSearchMessage() {
     for (let i = 0; i < commandArr.length; i++) {
       for (let j = 0; j < args.length; j++) {
-        if (args[j] == "for") {
+        if (args[j] == "on") {
           forOperation = commandArr[i];
           forOperationsPositionInTheMessage = j;
           object = args[forOperationsPositionInTheMessage - 1];
           var searchThings = args;
 
           return true;
-        } else if (revArgs[j] == "on") {
+        } else if (revArgs[j] == "for") {
           onOperation = commandArr[i];
           onOperationsPositionInTheMessage = j;
           object = args[onOperationsPositionInTheMessage + 1];
@@ -279,6 +351,26 @@ client.on("message", (message) => {
     }
   }
 
+  function createInviteLink() {
+    // Create an invite to a channel
+    message.channel.createInvite()
+      .then(invite => message.channel.send(`https://discord.gg/${invite.code}`))
+      .catch(console.error);
+  }
+
+  function rollaDie() {
+    var dieRoll = Math.floor(Math.random() * 6) + 1;
+    message.channel.send("I rolled a die and the result was \n|| " + dieRoll + " ||");
+  }
+
+  function joke() {
+    var numerall = Math.floor(Math.random() * jokeArr.length + 1);
+    message.channel.send(jokeArr[numerall]);
+    console.log(numerall);
+  }
+
+  swearCheck();
+
   const siriGreeting = `Hi ${message.author.username}, I am Siri, your personal virtual assistant. How may I help you?`;
 
   if (checkGreeting() && !checkOperation()) {
@@ -286,15 +378,6 @@ client.on("message", (message) => {
   }
 
   if (checkOperation() && checkGreeting()) {
-    // switch(operation) {
-    //   case 'ping':
-    //     ping();
-    //     break;
-    //   case 'search':
-    //     ping();
-    //     break;
-
-    // }
 
     if (operation == "ping") {
       ping();
@@ -307,15 +390,22 @@ client.on("message", (message) => {
     } else if (operation == "ban") {
       ban();
     } else if (operation == "clear") {
-       
       convertInt();
       clear(b);
       console.log(b);
     } else if (operation == "kick") {
       kick();
+    } else if (operation == 'invite') {
+      createInviteLink();
+    } else if (operation == 'rolladie') {
+      rollaDie();
+    } else if (operation == "joke" || operation == "pun") {
+      joke();
     }
   }
+
 });
+
 
 const config = require("./config.json");
 client.login(config.token);
