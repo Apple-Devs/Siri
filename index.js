@@ -1,24 +1,19 @@
 const Discord = require("discord.js");
-const { isMainThread } = require("worker_threads");
-
+const client = new Discord.Client();
 const fs = require("fs");
 
-var greetings = fs.readFileSync("greetings.txt");
-var greetArr = greetings.toString("utf8").split("\n");
+let greetingsArr, commandsArr, searchCommandsArr, jokesArr, swearWordsArr;
 
-var commands = fs.readFileSync("commands.txt");
-var commandArr = commands.toString("utf8").split("\n");
+convertFileToArray = filePath => {
+  let arrayName = fs.readFileSync(filePath).toString("utf8").split("\n");
+  return arrayName;
+}
 
-var searchCommands = fs.readFileSync("search commands.txt");
-var searchCommandArr = searchCommands.toString("utf8").split("\n");
-
-var jokes = fs.readFileSync("jokes.txt");
-var jokeArr = jokes.toString("utf8").split("\n");
-
-var swearWords = fs.readFileSync('swearing words.txt');
-var swearWordsArr = swearWords.toString('utf8').split("\n");
-
-const client = new Discord.Client();
+greetingsArr = convertFileToArray("greetings.txt")
+commandsArr = convertFileToArray("commands.txt")
+searchCommandsArr = convertFileToArray("searchCommands.txt")
+jokesArr = convertFileToArray("jokes.txt")
+swearWordsArr = convertFileToArray("swearWords.txt")
 
 client.on("ready", () => {
   console.log("I am ready!");
@@ -26,30 +21,27 @@ client.on("ready", () => {
 
 client.on("message", (message) => {
   if (message.author.bot || message.channel.type === "dm") return;
-  var punctuationLess = message.content.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-  var finalString = punctuationLess.replace(/\s{2,}/g," ");
+  let punctuationLess = message.content.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+  let finalString = punctuationLess.replace(/\s{2,}/g," ");
   message.content = finalString;
 
-  var args = message.content.split(/ +/);
-  var revArgs = message.content.split(/ +/).reverse();
-  var operation = "";
-  var operationsPositionInTheMessage;
-  var searchEngine;
-  var object = "";
-  var onOperationsPositionInTheMessage = 0;
-  var b;
-  var swear;
+  let args = message.content.split(/ +/);
+  let revArgs = message.content.split(/ +/).reverse();
+  let operation, object, searchEngine;
+  let operationsPositionInTheMessage;
+  let onOperationsPositionInTheMessage = 0;
+  let b;
+  console.log(greetingsArr);
+  console.log(args);
 
 
-  var lowerCaseMsg = message.content.toLowerCase();
-  var newMsg = lowerCaseMsg.replace(/\s{2,}/g," ");
-
-  function checkGreeting() {
-    for (let i = 0; i < greetArr.length; i++) {
+  checkGreeting = () => {
+    for (let i = 0; i < greetingsArr.length; i++) {
       for (let j = 0; j < args.length; j++) {
-        if (greetArr[i] == args[j]) {
+        if (greetingsArr[i] == args[j]) {
           for (let k = 0; k < args.length; k++) {
-            if (args[k] == "siri") {
+            if (args[k] =="siri") {
+              console.log("true hai")
               return true;
             }
           }
@@ -60,21 +52,19 @@ client.on("message", (message) => {
 
   
 
-  function checkForSwearWords() {
+  checkForSwearWords = () => {
     for (let i = 0; i < swearWordsArr.length; i++) {
       for (let j = 0; j < args.length; j++) {
         if (swearWordsArr[i] == args[j]) {
-          swear = swearWordsArr[i];
-          swearPos = j;
-          console.log(swear);
           return true;
         }
       }
     }
   }
 
-  function swearCheck() {
-    if (message.author.tag == "Tusshar#3024" || message.author.tag == "Rasputin#1629"){
+
+  swearCheck = () => {
+    if (message.author.tag == "Tusshar#3024" || message.author.tag == "Raspuutin#1629"){
       return;
     } else {
       checkForSwearWords();
@@ -87,40 +77,18 @@ client.on("message", (message) => {
         const role = guild.roles.cache.find((role) => {
           return role.name === roleName;
         });
-
-        if (!role) {
-          message.reply(`There is no role with the name "${roleName}"`);
-          return;
-        }
-        const member = guild.members.cache.get(message.author.id);
-        member.roles.add(role);
+        guild.members.cache.get(message.author.id).roles.add(role);
 
         return;
       }
     }
-  }
+};
 
-
-
-  // var filteredMfunctionGreeting() {
-  //   for (let i = 0; i < greetArr.length; i++) {
-  //     for (let j = 0; j < args.length; j++) {
-  //       if (greetArr[i] == args[j]) {
-  //         for (let k = 0; k < args.length; k++) {
-  //           if (args[k] == "siri") {
-  //             return true;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  function checkOperation() {
-    for (let i = 0; i < commandArr.length; i++) {
+  checkOperation = () => {
+    for (let i = 0; i < commandsArr.length; i++) {
       for (let j = 0; j < args.length; j++) {
-        if (commandArr[i] == args[j]) {
-          operation = commandArr[i];
+        if (commandsArr[i] == args[j]) {
+          operation = commandsArr[i];
           operationsPositionInTheMessage = j;
           return true;
         }
@@ -128,18 +96,17 @@ client.on("message", (message) => {
     }
   }
 
-  function checkPositionOfSearchMessage() {
-    for (let i = 0; i < commandArr.length; i++) {
+  checkPositionOfSearchMessage = () => {
+    for (let i = 0; i < commandsArr.length; i++) {
       for (let j = 0; j < args.length; j++) {
         if (args[j] == "on") {
-          forOperation = commandArr[i];
+          forOperation = commandsArr[i];  
           forOperationsPositionInTheMessage = j;
           object = args[forOperationsPositionInTheMessage - 1];
-          var searchThings = args;
 
           return true;
         } else if (revArgs[j] == "for") {
-          onOperation = commandArr[i];
+          onOperation = commandsArr[i];
           onOperationsPositionInTheMessage = j;
           object = args[onOperationsPositionInTheMessage + 1];
           return true;
@@ -148,54 +115,73 @@ client.on("message", (message) => {
     }
   }
 
-  function ping() {
+  ping = () => {
     message.channel.send("69ms");
   }
 
-  function searchTheSearch() {
-    for (let i = 0; i < searchCommandArr.length; i++) {
+  searchTheSearch = () => {
+    for (let i = 0; i < searchCommandsArr.length; i++) {
       for (let j = 0; j < args.length; j++) {
-        if (searchCommandArr[i] == args[j]) {
-          searchEngine = args[j];
+        
+        let searchStr = "";
+        searchStr += args[j];
+        searchStr += " ";
+        searchStr += args[j+1];
+        console.log(j)
+        console.log(searchStr);
+
+        if (searchCommandsArr[i] == searchStr) {
+          searchEngine = args[j] + "\ " + args[j+1];
           console.log(
-            `searched for the search engine. The search engine is ${searchEngine}`
+            `Searched for the search engine. The search engine is ${searchEngine}`
           );
           return;
+        } else if (searchCommandsArr[i] == args[j]){
+          searchEngine = args[j];
+        console.log(
+          `earched for the search engine. The search engine is ${searchEngine}`
+        );
+        return;
         }
       }
     }
   }
 
-  function search() {
-    console.log("does search work?");
+  search = () => {
     searchTheSearch();
     checkPositionOfSearchMessage();
-    var linkargs = object.split(" ").join("&20");
-
+    let linkargs = object.split(" ").join("&20");
+    searchThis = (siteLink) => {
+      message.channel.send("https://" + siteLink + linkargs)
+    }
     switch (searchEngine) {
       case "google":
-        var googleLink = `https://google.com/search?q=${linkargs}`;
-        message.channel.send(`I found this on the web \n${googleLink}`);
+        searchThis("google.com/search?q=")
         break;
       case "spotify":
-        var spotifyLink = `https://open.spotify.com/search/${linkargs}`;
-        message.channel.send(`I found this on the web \n${spotifyLink}`);
+        searchThis("open.spotify.com/search/")
         break;
       case "youtube":
-        var ytLink = `https://youtube.com/results?search_query=${linkargs}`;
-        message.channel.send(`I found this on the web \n${ytLink}`);
+        searchThis("youtube.com/results?search_query")
         break;
       case "apple music":
-        var appleMusicLink = `https://music.apple.com/us/search?term=${linkargs}`;
-        message.channel.send(`I found this on the web \n${appleMusicLink}`);
+        searchThis("music.apple.com/us/search?term=")
+        break;
+      case 'duckduckgo':
+        searchThis("duckduckgo.com/?q=")
+        break;
+      case 'youtube music':
+        searchThis("music.youtube.com/search?q=")
+        break;
+      case 'bing':
+        searchThis("bing.com/search?q=")
         break;
     }
   }
 
-  // mute function
-  function mute() {
+  mute = () => {
     if (message.member.hasPermission("MANAGE_ROLES")) {
-      var targetUser = message.mentions.users.first();
+      let targetUser = message.mentions.users.first();
       if (!targetUser) {
         message.reply("Please select someone to mute");
         return;
@@ -222,15 +208,14 @@ client.on("message", (message) => {
     }
   }
 
-  // unmute function
-  function unmute() {
+  unmute = () => {
     if (message.member.hasPermission("MANAGE_ROLES")) {
       if (!message.guild.me.hasPermission("MANAGE_ROLES")) {
         message.reply("I don't have permission to manage roles");
         return;
       }
 
-      var targetUser = message.mentions.users.first();
+      let targetUser = message.mentions.users.first();
       if (!targetUser) {
         message.reply("Please select someone to mute");
         return;
@@ -261,21 +246,20 @@ client.on("message", (message) => {
     }
   }
 
-  // Ban function
-  function ban() {
+  ban = () => {
     if (message.member.hasPermission("BAN_MEMBERS")) {
       if (!message.guild.me.hasPermission("BAN_MEMBERS")) {
         message.reply("I don't have permission to manage roles");
         return;
       }
 
-      var userToBan = message.mentions.users.first();
+      let userToBan = message.mentions.users.first();
       if (!userToBan) {
         message.reply("Please select a user from this server to ban");
         return;
       }
 
-      var { guild } = message;
+      let { guild } = message;
 
       if (!guild.member(userToBan)) {
         message.reply("You need to provide a valid user");
@@ -296,8 +280,7 @@ client.on("message", (message) => {
     }
   }
 
-  // Clear command
-  function clear(numberOfMessagesToBeCleared) {
+  clear = numberOfMessagesToBeCleared => {
     if (!message.member.hasPermission("MANAGE_MESSAGES"))
       return message.reply("You don't have permission to manage messages");
     if (!message.guild.me.hasPermission("MANAGE_MESSAGES"))
@@ -317,7 +300,7 @@ client.on("message", (message) => {
       .catch(console.err);
   }
 
-  function kick() {
+  kick = () => {
     if (!message.member.hasPermission("KICK_MEMBERS")) {
       message.reply("You have no permissions to do that");
       return;
@@ -344,43 +327,41 @@ client.on("message", (message) => {
       .catch(console.error);
   }
 
-  function convertInt() {
-    var a = message.content.match(/\d+/g);
-    for (var i = 0; i < a.length; a++) {
+  convertInt = () => {
+    let a = message.content.match(/\d+/g);
+    for (let i = 0; i < a.length; a++) {
       b = parseInt(a[i]);
       console.log(typeof(b));
     }
   }
 
-  function createInviteLink() {
-    // Create an invite to a channel
+  createInviteLink = () => {
     message.channel.createInvite()
       .then(invite => message.channel.send(`https://discord.gg/${invite.code}`))
       .catch(console.error);
   }
 
-  function rollaDie() {
-    var dieRoll = Math.floor(Math.random() * 6) + 1;
+  rollaDie = () => {
+    let dieRoll = Math.floor(Math.random() * 6) + 1;
     message.channel.send("I rolled a die and the result was \n|| " + dieRoll + " ||");
   }
 
-  function joke() {
-    var numerall = Math.floor(Math.random() * jokeArr.length + 1);
-    message.channel.send(jokeArr[numerall]);
-    console.log(numerall);
+  joke = () => {
+    let randomJokeNumber = Math.floor(Math.random() * jokesArr.length + 1);
+    message.channel.send(jokesArr[randomJokeNumber]);
   }
 
-  function time() {
+  time = () => {
 
     for (let i = 0; i < args.length; i++) {
       if (args[i].toLowerCase() == 'time') {
-        var currentdate = new Date(); 
-        var datetime = "The time is: " + currentdate.getDate() + "/"
+        let currentdate = new Date(); 
+        let datetime = "```The time is: " + currentdate.getDate() + "/"
                     + (currentdate.getMonth()+1)  + "/" 
                     + currentdate.getFullYear() + " @ "  
                     + currentdate.getHours() + ":"  
                     + currentdate.getMinutes() + ":" 
-                    + currentdate.getSeconds();
+                    + currentdate.getSeconds() + "```";
         console.log(datetime)
         message.channel.send(datetime);
       }
