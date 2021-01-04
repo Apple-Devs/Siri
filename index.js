@@ -9,9 +9,6 @@ for (const key in langs) {
   langsInverted[value] = key;
 }
 
-
-
-
 let greetingsArr, commandsArr, searchCommandsArr, jokesArr, swearWordsArr;
 
 convertFileToArray = filePath => {
