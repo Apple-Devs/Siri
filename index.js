@@ -25,7 +25,7 @@ searchCommandsArr = convertFileToArray("searchCommands.txt")
 jokesArr = convertFileToArray("jokes.txt")
 swearWordsArr = convertFileToArray("swearWords.txt")
 
-client.on("ready", () => console.log("I am ready!"));
+client.on("ready", () => console.log("Hello There!"));
 
 client.on("message", (message) => {
   var messageContent = message.content;
