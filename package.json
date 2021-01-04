@@ -1,0 +1,27 @@
+{
+  "name": "siri",
+  "version": "1.0.0",
+  "description": "Siri Bot",
+  "main": "index.js",
+  "dependencies": {
+    "@vitalets/google-translate-api": "^4.0.0",
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "google-translate-api": "^2.0.3",
+    "google-translate-api-browser": "^1.1.71",
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Apple-Devs/Siri.git"
+  },
+  "author": "Teghjyot Singh; Tusshar-developer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Apple-Devs/Siri/issues"
+  },
+  "homepage": "https://github.com/Apple-Devs/Siri#readme"
+}
