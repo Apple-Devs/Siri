@@ -78,263 +78,44 @@ client.on("message", (message) => {
   }
 
   const pingFile = require("./commands/ping.js");
-  const ping = () => {pingFile.execute(message);
-  console.log("THRE")}
+  const ping = () => pingFile.execute(message);
 
-  searchTheSearch = () => {
-    for (let i = 0; i < searchCommandsArr.length; i++) {
-      for (let j = 0; j < args.length; j++) {
-        
-        let searchStr = "";
-        searchStr += args[j];
-        searchStr += " ";
-        searchStr += args[j+1];
-        // console.log(j)
-        // console.log(searchStr);
+  const searchFile = require("./commands/search.js");
+  const searchTheSearch = () => searchFile.searchTheSearch(searchCommandsArr, args, searchEngine);
+  const search = () => searchFile.search(searchEngine, searchTheSearch, checkPositionOfSearchMessage, object, message);
 
-        if (searchCommandsArr[i] == searchStr) {
-          searchEngine = args[j] + "\ " + args[j+1];
-          console.log(
-            `Searched for the search engine. The search engine is ${searchEngine}`
-          );
-          return;
-        } else if (searchCommandsArr[i] == args[j]){
-          searchEngine = args[j];
-        console.log(
-          `earched for the search engine. The search engine is ${searchEngine}`
-        );
-        return;
-        }
-      }
-    }
-  }
+  const muteFile = require('./commands/mute.js');
+  const mute = () => muteFile.mute(message, args);
+  const unmute = () => muteFile.unmute(message, args)
 
-  search = () => {
-    searchTheSearch();
-    checkPositionOfSearchMessage();
-    let linkargs = object.split(" ").join("&20");
-    searchThis = (siteLink) => {
-      message.channel.send("https://" + siteLink + linkargs)
-    }
-    switch (searchEngine) {
-      case "google":
-        searchThis("google.com/search?q=")
-        break;
-      case "spotify":
-        searchThis("open.spotify.com/search/")
-        break;
-      case "youtube":
-        searchThis("youtube.com/results?search_query")
-        break;
-      case "apple music":
-        searchThis("music.apple.com/us/search?term=")
-        break;
-      case 'duckduckgo':
-        searchThis("duckduckgo.com/?q=")
-        break;
-      case 'youtube music':
-        searchThis("music.youtube.com/search?q=")
-        break;
-      case 'bing':
-        searchThis("bing.com/search?q=")
-        break;
-    }
-  }
+  const banFile = require("./commands/ban.js");
+  const ban = () => banFile.ban(message);
 
-  mute = () => {
-    if (message.member.hasPermission("MANAGE_ROLES")) {
-      let targetUser = message.mentions.users.first();
-      if (!targetUser) {
-        message.reply("Please select someone to mute");
-        return;
-      }
+  // const clearFile = require("./commands/clear.js");
+  // const clear = (numberOfMessagesToBeCleared) => clearFile.clear(message, numberOfMessagesToBeCleared);
 
-      args.shift();
+  const kickFile = require("./commands/kick.js");
+  const kick = () => kickFile.kick(message);
 
-      const roleName = "Muted";
-      const { guild } = message;
-      const role = guild.roles.cache.find((role) => {
-        return role.name === roleName;
-      });
+  const convertIntFile = require("./commands/convertInt.js");
+  const convertInt = () => convertIntFile.convertInt(message);
 
-      if (!role) {
-        message.reply(`There is no role with the name "${roleName}"`);
-        return;
-      }
-      const member = guild.members.cache.get(targetUser.id);
-      member.roles.add(role);
+  const createInviteFile = require("./commands/createInviteLink.js");
+  const createInviteLink = () => createInviteFile.createInviteLink();
 
-      message.reply(`${message.mentions.users.first()} has now been muted.`);
-    } else {
-      message.reply("You don't have permission to mute others");
-    }
-  }
+  const rollaDieFile = require("./commands/rollaDie.js");
+  const rollaDie = () => rollaDieFile.rollaDie(message);
 
-  unmute = () => {
-    if (message.member.hasPermission("MANAGE_ROLES")) {
-      if (!message.guild.me.hasPermission("MANAGE_ROLES")) {
-        message.reply("I don't have permission to manage roles");
-        return;
-      }
+  const jokeFile = require("./commands/joke.js");
+  const joke = () => jokeFile.joke(jokesArr, message);
 
-      let targetUser = message.mentions.users.first();
-      if (!targetUser) {
-        message.reply("Please select someone to mute");
-        return;
-      }
-
-      args.shift();
-
-      const roleName = "Muted";
-      const { guild } = message;
-      const role = guild.roles.cache.find((role) => {
-        return role.name === roleName;
-      });
-
-      if (!role) {
-        message.reply(`There is no role with the name "${roleName}"`);
-        return;
-      }
-      const member = guild.members.cache.get(targetUser.id);
-
-      if (member.roles.cache.get(role.id)) {
-        member.roles.remove(role);
-        message.reply(`${message.mentions.users.first()} has now been unmuted`);
-      } else {
-        message.reply(`${message.mentions.users.first()} is already unmuted`);
-      }
-    } else {
-      message.reply("You don't have permission to unmute others");
-    }
-  }
-
-  ban = () => {
-    if (message.member.hasPermission("BAN_MEMBERS")) {
-      if (!message.guild.me.hasPermission("BAN_MEMBERS")) {
-        message.reply("I don't have permission to manage roles");
-        return;
-      }
-
-      let userToBan = message.mentions.users.first();
-      if (!userToBan) {
-        message.reply("Please select a user from this server to ban");
-        return;
-      }
-
-      let { guild } = message;
-
-      if (!guild.member(userToBan)) {
-        message.reply("You need to provide a valid user");
-        return;
-      }
-
-      guild.members
-        .ban(userToBan.id)
-        .then(() =>
-          message.channel.send(
-            `Banned ${userToBan.username} from ${guild.name}`
-          )
-        )
-        .catch(console.error);
-    } else {
-      message.reply("you don't have permission to ban members");
-      return;
-    }
-  }
-
-  clear = numberOfMessagesToBeCleared => {
-    if (!message.member.hasPermission("MANAGE_MESSAGES"))
-      return message.reply("You don't have permission to manage messages");
-    if (!message.guild.me.hasPermission("MANAGE_MESSAGES"))
-      return message.reply("I don't have permission to manage messages");
-
-    if (!numberOfMessagesToBeCleared) {
-      message.reply("Please provide number of messages to be deleted.");
-      return;
-    }
-    numberOfMessagesToBeCleared = parseFloat(numberOfMessagesToBeCleared);
-    numberOfMessagesToBeCleared = Math.round(numberOfMessagesToBeCleared);
-    message.channel
-      .bulkDelete(numberOfMessagesToBeCleared)
-      .then((messages) => {
-        console.log(`Bulk Deleted ${messages.size} messages`);
-      })
-      .catch(console.err);
-  }
-
-  kick = () => {
-    if (!message.member.hasPermission("KICK_MEMBERS")) {
-      message.reply("You don't have permission to Kick Members!");
-      return;
-    }
-
-    let mentionMember = message.mentions.members.first();
-
-    if (!mentionMember) {
-      message.reply("Please mention member which you need to kick");
-      return;
-    }
-
-    if (!mentionMember.kickable) {
-      message.channel.send("I have no permissions to kick this user");
-      return;
-    }
-
-    mentionMember
-      .kick()
-      .then(() => {
-        console.log(`Kicked ${mentionMember}`);
-        message.channel.send(`Kicked ${mentionMember}`);
-      })
-      .catch(console.error);
-  }
-
-  convertInt = () => {
-    let a = message.content.match(/\d+/g);
-    for (let i = 0; i < a.length; a++) {
-      b = parseInt(a[i]);
-      console.log(typeof(b));
-    }
-  }
-
-  createInviteLink = () => {
-    message.channel.createInvite()
-      .then(invite => message.channel.send(`https://discord.gg/${invite.code}`))
-      .catch(console.error);
-  }
-
-  rollaDie = () => {
-    let dieRoll = Math.floor(Math.random() * 6) + 1;
-    message.channel.send("I rolled a die and the result was \n|| " + dieRoll + " ||");
-  }
-
-  joke = () => {
-    let randomJokeNumber = Math.floor(Math.random() * jokesArr.length + 1);
-    message.channel.send(jokesArr[randomJokeNumber]);
-  }
-
-  time = () => {
-
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].toLowerCase() == 'time') {
-        let currentdate = new Date(); 
-        let datetime = "```The time is: " + currentdate.getDate() + "/"
-                    + (currentdate.getMonth()+1)  + "/" 
-                    + currentdate.getFullYear() + " @ "  
-                    + currentdate.getHours() + ":"  
-                    + currentdate.getMinutes() + ":" 
-                    + currentdate.getSeconds() + "```";
-        console.log(datetime)
-        message.channel.send(datetime);
-      }
-    }
-  }
+  const timeFile = require("./commands/time.js");
+  const time = () => timeFile.time(args, message);
 
   swearCheck();
 
   var everyLetter = messageContent.trim().split("");
   var messageWords = messageContent.toLowerCase().trim().split(' ');
-
   const newspi = messageContent.match(/[^:"\s]+|\:|"/g);
 
   checkFor = (word, inverted) => {
@@ -352,7 +133,6 @@ client.on("message", (message) => {
   }
 
   translateIt = () => {
-
     let firstQuotePos       = checkForThePositionOf ( "\""    , false ) ;
     let secondQuotePos      = checkForThePositionOf ("\""     , true  ) ;
     let colonPos            = checkForThePositionOf ( ":"     , false ) ;
@@ -572,7 +352,7 @@ client.on("message", (message) => {
     message.channel.send(siriGreeting);
   }
 
-  if ((checkOperation() != false) && checkGreeting()) {
+  if (checkOperation() && checkGreeting()) {
 
     if (operation == "ping") {
       ping();
@@ -585,7 +365,7 @@ client.on("message", (message) => {
     } else if (operation == "ban") {
       ban();
     } else if (operation == "clear") {
-      convertInt();
+      b = convertInt();
       clear(b);
       console.log(b);
     } else if (operation == "kick") {
