@@ -26,9 +26,9 @@ module.exports = {
       }
     }
   },
-  search(searchEngine, searchTheSearch, checkPositionOfSearchMessage, object, message) {
+  search(searchEngine, searchTheSearch, messageSearchPos, object, message) {
     searchEngine = searchTheSearch();
-    checkPositionOfSearchMessage();
+    messageSearchPos();
     let linkargs = object.split(" ").join("&20");
     searchThis = (siteLink) => {
       message.channel.send("https://" + siteLink + linkargs)

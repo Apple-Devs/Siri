@@ -1,6 +1,6 @@
 module.exports = {
     name: "heySiriCheck",
-    checkOperation(commandsArr, args, operation) {
+    checkOperation(commandsArr, args, operation, message) {
         for (let i = 0; i < commandsArr.length; i++) {
           commandsArr[i] = commandsArr[i].replace(/(\r\n|\n|\r)/gm, "");
           for (let j = 0; j < args.length; j++) {
@@ -10,7 +10,7 @@ module.exports = {
             }
           }
         }
-
+        // message.channel.send("I am not sure I understand.");
         return false;
     },
     checkGreeting(greetingsArr, args) {
