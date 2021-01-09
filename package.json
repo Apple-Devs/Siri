@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@vitalets/google-translate-api": "^4.0.0",
+    "canvas": "^2.6.1",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "google-translate-api": "^2.0.3",
