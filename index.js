@@ -39,6 +39,14 @@ client.on("message", (message) => {
     message.channel.send("https://tenor.com/view/bruh-moment-bruh-moment-recording-gif-14698316");
   }
 
+  if (args.includes("rekt")) {
+    message.channel.send("https://tenor.com/view/getrekt-shotsfired-sass-stephen-hawking-hawking-gif-5271851");
+  }
+
+  if (args.includes("delete")) {
+    message.channel.send("https://tenor.com/view/anastasia-thot-bot-delete-this-points-gun-smiling-gif-14345891");
+  }
+
   const checkHeySiriJs = require ( "./commands/heySiri.js"            ) ;
   const profanityJs    = require ( "./commands/checkForSwearWords.js" ) ;
   const swearCheckJs   = require ( "./commands/swearCheck.js"         ) ;
@@ -98,33 +106,34 @@ client.on("message", (message) => {
     }
 
     translateIt = () => {
-      let firstQuotePos           = checkForThePositionOf ( "\""    , false ) ;
-      let secondQuotePos          = checkForThePositionOf ("\""     , true  ) ;
-      let colonPos                = checkForThePositionOf ( ":"     , false ) ;
-      let fromPos                 = checkForThePositionOf ( "from"  , false ) ;
-      let toPos                   = checkForThePositionOf ( "to"    , false ) ;
-      let untranslatedArray       = []                                        ;
-      let fromLangArray           = []                                        ;
-      let toLangArray             = []                                        ;
-      let untranslatedText        = ""                                        ;
-      let fromLang                = ""                                        ;
-      let toLang                  = ""                                        ;
-      let ISOCode                 = ""                                        ;
-      let isUsingQuotes           = firstQuotePos != secondQuotePos           ;
-      let isUsingColons           = colonPos != -1                            ;
-      let containsFirstQuote      = firstQuotePos != -1                       ;
-      let containsSecondQuote     = secondQuotePos != -1                      ;
-      let containsQuotesOrColons  = isUsingQuotes || isUsingColons            ;
-      let containsFrom            = fromPos != -1                             ;
-      let fromBeforeQuotes        = fromPos < firstQuotePos                   ;
-      let fromAfterQuotes         = fromPos > secondQuotePos                  ;
-      let fromBeforeColons        = fromPos < colonPos                        ;
-      let fromAfterColons         = fromPos > secondQuotePos                  ;
-      let containsTo              = toPos != -1                               ;
-      let toBeforeQuotes          = toPos < firstQuotePos                     ;
-      let toAfterQuotes           = toPos > secondQuotePos                    ;
-      let toBeforeColons          = toPos < colonPos                          ;
-      let toAfterColons           = toPos > secondQuotePos                    ;
+      let 
+      firstQuotePos           = checkForThePositionOf ( "\""    , false ) ;
+      secondQuotePos          = checkForThePositionOf ("\""     , true  ) ;
+      colonPos                = checkForThePositionOf ( ":"     , false ) ;
+      fromPos                 = checkForThePositionOf ( "from"  , false ) ;
+      toPos                   = checkForThePositionOf ( "to"    , false ) ;
+      untranslatedArray       = []                                        ;
+      fromLangArray           = []                                        ;
+      toLangArray             = []                                        ;
+      untranslatedText        = ""                                        ;
+      fromLang                = ""                                        ;
+      toLang                  = ""                                        ;
+      ISOCode                 = ""                                        ;
+      isUsingQuotes           = firstQuotePos != secondQuotePos           ;
+      isUsingColons           = colonPos != -1                            ;
+      containsFirstQuote      = firstQuotePos != -1                       ;
+      containsSecondQuote     = secondQuotePos != -1                      ;
+      containsQuotesOrColons  = isUsingQuotes || isUsingColons            ;
+      containsFrom            = fromPos != -1                             ;
+      fromBeforeQuotes        = fromPos < firstQuotePos                   ;
+      fromAfterQuotes         = fromPos > secondQuotePos                  ;
+      fromBeforeColons        = fromPos < colonPos                        ;
+      fromAfterColons         = fromPos > secondQuotePos                  ;
+      containsTo              = toPos != -1                               ;
+      toBeforeQuotes          = toPos < firstQuotePos                     ;
+      toAfterQuotes           = toPos > secondQuotePos                    ;
+      toBeforeColons          = toPos < colonPos                          ;
+      toAfterColons           = toPos > secondQuotePos                    ;
 
       
 
@@ -344,7 +353,7 @@ client.on("message", (message) => {
     drawStar = (x, y, w) => {
       var rad = ctx.createRadialGradient(x, y, w/1.5, x, y, w*2);
         rad.addColorStop(0, "white");
-        rad.addColorStop(1, "#030f33");
+        rad.addColorStop(1, "rgba(0,0,0,0)");
       ctx.beginPath();
       ctx.arc(x, y, w*2, 0, 2 * Math.PI);
       ctx.fillStyle = rad;
@@ -355,7 +364,7 @@ client.on("message", (message) => {
     for (var i = 0; i < Math.floor(Math.random() * 250) + 100; i++) {
       var starX = Math.floor(Math.random() * canvasWidth) + 1
       var starY = Math.floor(Math.random() * canvasHeight) + 1
-      var starW = Math.floor(Math.random() * 7) + 1;
+      var starW = Math.floor(Math.random() * 5) + 1;
 
       drawStar(starX, starY, starW)
 
@@ -434,7 +443,7 @@ client.on("message", (message) => {
         traduisez();
         break;
       
-      case "toire":
+      case "toile":
         toile();
         break;
     }
