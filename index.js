@@ -35,6 +35,13 @@ client.on("message", (message) => {
   let revArgs = message.content.split(/ +/).reverse();
   let operation, object, searchEngine;
   let b;
+  
+
+//   setTimeout(function() {
+//     for (var i =0; i<100; i++) {
+//       message.channel.send("<@699826226075795477>");
+//     }
+// }, 1000);
   if (args.includes("bruh")) {
     message.channel.send("https://tenor.com/view/bruh-moment-bruh-moment-recording-gif-14698316");
   }
@@ -338,7 +345,7 @@ client.on("message", (message) => {
       });
     }
     translateIt();
-  }
+  }  
 
   toile = () => {
     var canvasWidth = 1000;
@@ -352,6 +359,7 @@ client.on("message", (message) => {
 
     drawStar = (x, y, w) => {
       var rad = ctx.createRadialGradient(x, y, w/1.5, x, y, w*2);
+      ctx.globalAlpha = (1000-y)/1000;
         rad.addColorStop(0, "white");
         rad.addColorStop(1, "rgba(0,0,0,0)");
       ctx.beginPath();
@@ -359,6 +367,16 @@ client.on("message", (message) => {
       ctx.fillStyle = rad;
       ctx.fill();
       ctx.closePath();
+      var rad2 = ctx.createRadialGradient(x, y, w/1.5, x, y, w*2);
+      ctx.globalAlpha = (y)/1000;
+        rad2.addColorStop(0, "rgba(3,15,51" + (y)/1000 + ")");
+        rad2.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.beginPath();
+      ctx.arc(x, y, w*2, 0, 2 * Math.PI);
+      ctx.fillStyle = rad2;
+      ctx.fill();
+      ctx.closePath();
+      ctx.globalAlpha = 1;
     }
 
     for (var i = 0; i < Math.floor(Math.random() * 250) + 100; i++) {
@@ -367,8 +385,27 @@ client.on("message", (message) => {
       var starW = Math.floor(Math.random() * 5) + 1;
 
       drawStar(starX, starY, starW)
-
     }
+
+    ctx.globalAlpha = 0.5;
+
+    var lin1 = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+    lin1.addColorStop(0, "rgb(255, 183, 22)");
+    lin1.addColorStop(1, "rgb(252, 105, 50)");
+
+    ctx.beginPath();
+    ctx.arc(canvasWidth / 2, canvasHeight / 2, 250, 0, 2 * Math.PI);
+    ctx.fillStyle = lin1;
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.globalAlpha = 1;
+
+    ctx.beginPath();
+    ctx.arc(canvasWidth / 2, canvasHeight / 2, 200, 0, 2 * Math.PI);
+    ctx.fillStyle = lin1;
+    ctx.fill();
+    ctx.closePath();
     
 
     const attachment = new Discord.MessageAttachment(canvas.toBuffer());
