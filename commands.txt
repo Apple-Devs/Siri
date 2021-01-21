@@ -14,6 +14,8 @@ calculator
 removerole
 ping
 meme
+daily
+current
 weather
 rockpaperscissors
 cricketmatches
