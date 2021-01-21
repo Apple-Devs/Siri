@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const request = require("request");
 const client = new Discord.Client();
 const { translate } = require("google-translate-api-browser");
 const Canvas = require('canvas');
@@ -23,7 +24,7 @@ let swearWordsArr      = convertFileToArray ( "swearWords.txt" ) ;
 
 client.on("ready", () => console.log("Hello There!"));
 
-client.on("message", (message) => {
+client.on("message", async message => {
   var messageContent = message.content;
   if (message.author.bot || message.channel.type === "dm") return;
 
@@ -61,6 +62,7 @@ client.on("message", (message) => {
   const rollaDieJs     = require ( "./commands/rollaDie.js"           ) ;
   const jokeJs         = require ( "./commands/joke.js"               ) ;
   const timeJs         = require ( "./commands/time.js"               ) ;
+  const weatherJs      = require ( "./commands/weather.js"            ) ;
 
   const checkGreeting      = () => checkHeySiriJs.checkGreeting  ( greetingsArr , args                                                  ) ;  
   const checkForSwearWords = () => profanityJs.execute           ( swearWordsArr , args                                                 ) ;
@@ -79,6 +81,8 @@ client.on("message", (message) => {
   const rollaDie           = () => rollaDieJs.rollaDie           ( message                                                              ) ;
   const joke               = () => jokeJs.joke                   ( jokesArr , message                                                   ) ;
   const time               = () => timeJs.time                   ( args , message                                                       ) ;
+  const current            = () => weatherJs.current             ( message, args                                                        ) ;
+  const dailyForecast      = () => weatherJs.dailyForecast       ( message, args, client                                                ) ;
 
   traduisez = () => {
 
@@ -382,14 +386,20 @@ client.on("message", (message) => {
   const siriGreeting = `Hi ${message.author.username}, I am Siri, your personal virtual assistant. How may I help you?`;
 
   if (checkGreeting() && !checkOperation()) {
+    args.shift();
+    args.shift();
     message.channel.send(siriGreeting);
   }
 
   if (checkOperation() && checkGreeting()) {
+    args.shift();
+    args.shift();
 
     switch (operation) {
       default:
         message.channel.send("I'm not sure I understand.");
+        break;
+
       case "ping" :
         ping();
         break;
@@ -446,11 +456,22 @@ client.on("message", (message) => {
       case "toile":
         toile();
         break;
+
+      case "current":
+        current();
+        break;
+
+      case 'daily':
+        dailyForecast();
+        break;
+
+      case 'timer':
+        timer();
+        break;
     }
   }
 
 });
 
 const config = require("./config.json");
-const swearCheck = require("./commands/swearCheck.js");
 client.login(config.token);
